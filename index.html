@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-  <head>
+<head>
     <meta charset='utf-8'>
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -9,211 +9,288 @@
     <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
     <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
 
+    <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
 
     <title>Enter Marketplace API by SvyaznoyMarket</title>
-  </head>
+</head>
 
-  <body>
-    <header>
-      <div class="inner">
+<body>
+<header>
+    <div class="inner">
         <h1>Enter Marketplace API</h1>
         <h2>API specification of Enter Marketplace engine.</h2>
-        <a href="https://github.com/SvyaznoyMarket/marketplace-api" class="button"><small>View project on</small> GitHub</a>
-      </div>
-    </header>
-
-    <div id="content-wrapper">
-      <div class="inner clearfix">
-        <section id="main-content">
-          <h1>
-<a id="Интеграция-с-enter-marketplace" class="anchor" href="#%D0%98%D0%BD%D1%82%D0%B5%D0%B3%D1%80%D0%B0%D1%86%D0%B8%D1%8F-%D1%81-enter-marketplace" aria-hidden="true"><span class="octicon octicon-link"></span></a>Интеграция с Enter Marketplace</h1>
-
-<p>Основные интеграции:</p>
-
-<ul>
-<li>Товары (+ харакетиристики) — из XML-выгрузки (на текущий момент товары в заводятся редакцией Enter вручную, детали обсуждаются с менеджером)</li>
-<li>Цены — из XML-выгрузки</li>
-<li>Остатки — отдельный сервис для обновления остатков</li>
-<li>Варианты доставки — из XML-выгрузки</li>
-<li>Передача созданных заказов обратно партнёру — API по выгрузке заказов за определённое время</li>
-<li>Обновление статуса заказа партнёром — push статуса заказа на нас от партнёра</li>
-</ul>
-
-<p>Для обновления только остатков предусмотрен отдельный сервис, чтобы данные по наличию товара можно было обновлять часто.</p>
-
-<p>Созданные на сайте и через КЦ Enter заказы будут передаваться партнёру в виде выгрузки за определённый период (метод <code>getOrders</code>).</p>
-
-<h1>
-<a id="Регистрация-партнёра-в-enter-marketplace" class="anchor" href="#%D0%A0%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B0%D1%86%D0%B8%D1%8F-%D0%BF%D0%B0%D1%80%D1%82%D0%BD%D1%91%D1%80%D0%B0-%D0%B2-enter-marketplace" aria-hidden="true"><span class="octicon octicon-link"></span></a>Регистрация партнёра в Enter Marketplace</h1>
-
-<p>Для начала работы партнёр должен быть зарегистрирован в Enter Marketplace.
-Для регистрации партнёра нужна следующая информация:
-Название партнёра (будет отображаться на сайте)
-Логотип (картинка, будет отображать на странице оформления заказа)
-URL, по которому будет доступна XML-выгрузка товаров (опционально)
-XML-выгрузка товаров
-Описание формата (DTD): shops.dtd.
-Пример выгрузки:</p>
-
-<div class="highlight highlight-text-xml"><pre>&lt;?<span class="pl-ent">xml</span><span class="pl-e"> version</span>=<span class="pl-s"><span class="pl-pds">"</span>1.0<span class="pl-pds">"</span></span><span class="pl-e"> encoding</span>=<span class="pl-s"><span class="pl-pds">"</span>utf-8<span class="pl-pds">"</span></span>?&gt;
-&lt;!<span class="pl-k">DOCTYPE</span> <span class="pl-v">yml_catalog</span> SYSTEM "shops.dtd"&gt;
-&lt;<span class="pl-ent">yml_catalog</span> <span class="pl-e">date</span>=<span class="pl-s"><span class="pl-pds">"</span>2014-06-30 18:31<span class="pl-pds">"</span></span>&gt;
-  &lt;<span class="pl-ent">shop</span>&gt;
-    &lt;<span class="pl-ent">name</span>&gt;Enter.ru&lt;/<span class="pl-ent">name</span>&gt;
-    &lt;<span class="pl-ent">company</span>&gt;Enter.ru&lt;/<span class="pl-ent">company</span>&gt;
-    &lt;<span class="pl-ent">url</span>&gt;http://www.enter.ru&lt;/<span class="pl-ent">url</span>&gt;
-    &lt;<span class="pl-ent">email</span>&gt;enter@enter.ru&lt;/<span class="pl-ent">email</span>&gt;
-    &lt;<span class="pl-ent">currencies</span>&gt;
-      &lt;<span class="pl-ent">currency</span> <span class="pl-e">id</span>=<span class="pl-s"><span class="pl-pds">"</span>RUR<span class="pl-pds">"</span></span> <span class="pl-e">rate</span>=<span class="pl-s"><span class="pl-pds">"</span>1<span class="pl-pds">"</span></span>/&gt;
-    &lt;/<span class="pl-ent">currencies</span>&gt;
-    &lt;<span class="pl-ent">offers</span>&gt;
-      &lt;<span class="pl-ent">offer</span> <span class="pl-e">id</span>=<span class="pl-s"><span class="pl-pds">"</span>1142<span class="pl-pds">"</span></span> <span class="pl-e">type</span>=<span class="pl-s"><span class="pl-pds">"</span>vendor.model<span class="pl-pds">"</span></span> <span class="pl-e">available</span>=<span class="pl-s"><span class="pl-pds">"</span>false<span class="pl-pds">"</span></span>&gt;
-        &lt;<span class="pl-ent">url</span>&gt;http://www.enter.ru/reg/78637/product/household/odeyalo-140-h-205-sm-s-ekstraktom-aloe-vera-dargez-neapol-2040502000168&lt;/<span class="pl-ent">url</span>&gt;
-        &lt;<span class="pl-ent">price</span>&gt;1890.00&lt;/<span class="pl-ent">price</span>&gt;
-        &lt;<span class="pl-ent">currencyId</span>&gt;RUR&lt;/<span class="pl-ent">currencyId</span>&gt;
-        &lt;<span class="pl-ent">categoryId</span>&gt;3690&lt;/<span class="pl-ent">categoryId</span>&gt;
-        &lt;<span class="pl-ent">picture</span>&gt;http://fs01.enter.ru/1/1/500/09/2639.jpg&lt;/<span class="pl-ent">picture</span>&gt;
-        &lt;<span class="pl-ent">store</span>&gt;false&lt;/<span class="pl-ent">store</span>&gt;
-        &lt;<span class="pl-ent">pickup</span>&gt;false&lt;/<span class="pl-ent">pickup</span>&gt;
-        &lt;<span class="pl-ent">delivery</span>&gt;true&lt;/<span class="pl-ent">delivery</span>&gt;
-        &lt;<span class="pl-ent">local_delivery_cost</span>&gt;590&lt;/<span class="pl-ent">local_delivery_cost</span>&gt;
-        &lt;<span class="pl-ent">typePrefix</span>&gt;Одеяло 140 х 205 см с экстрактом алоэ вера&lt;/<span class="pl-ent">typePrefix</span>&gt;
-        &lt;<span class="pl-ent">vendor</span>&gt;Dargez&lt;/<span class="pl-ent">vendor</span>&gt;
-        &lt;<span class="pl-ent">model</span>&gt;"Неаполь"&lt;/<span class="pl-ent">model</span>&gt;
-        &lt;<span class="pl-ent">description</span>&gt;Одеяло «Неаполь» от компании Dargez – это сочетание, казалось бы, несочетаемых вещей: с одной стороны, оно обладает релаксирующим эффектом, помогает расслабиться вечером и быстро уснуть, а с другой – оно наполняет ваш организм энергией и силой, и ваше утро начнется не с ненависти к будильнику, а со сладких потягиваний. Это все возможно благодаря специальной пропитке материала – алоэ вера, которая благодаря своим целебным свойствам заботится о красоте и здоровье вашей кожи во время сна. К тому же о...&lt;/<span class="pl-ent">description</span>&gt;
-        &lt;<span class="pl-ent">manufacturer_warranty</span>&gt;true&lt;/<span class="pl-ent">manufacturer_warranty</span>&gt;
-        &lt;<span class="pl-ent">barcode</span>&gt;2040502000168&lt;/<span class="pl-ent">barcode</span>&gt;
-        &lt;<span class="pl-ent">amount</span>&gt;10&lt;/<span class="pl-ent">amount</span>&gt;
-      &lt;/<span class="pl-ent">offer</span>&gt;
-    &lt;/<span class="pl-ent">offers</span>&gt;
-  &lt;/<span class="pl-ent">shop</span>&gt;
-&lt;/<span class="pl-ent">yml_catalog</span>&gt;</pre></div>
-
-<p>Детали обработки выгрузки в Enter Marketplace:
-Поддерживаемые типы товаров (offer): vendor.model
-Поддерживаемые валюты: RUB
-Поддержка нескольких картинок для одного товарного предложения (используется несколько элементов picture для одного товарного предложения)</p>
-
-<h1>
-<a id="api-enter-marketplace" class="anchor" href="#api-enter-marketplace" aria-hidden="true"><span class="octicon octicon-link"></span></a>API Enter Marketplace</h1>
-
-<p>API работает через протокол SOAP 1.1, <a href="https://api.enter.ru/marketplace/integration/soap?wsdl">WSDL</a> с описанием методов. Обмен данными осуществляется через защищённое соединение (HTTPS).</p>
-
-<h2>
-<a id="Загрузка-товаров" class="anchor" href="#%D0%97%D0%B0%D0%B3%D1%80%D1%83%D0%B7%D0%BA%D0%B0-%D1%82%D0%BE%D0%B2%D0%B0%D1%80%D0%BE%D0%B2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Загрузка товаров</h2>
-
-<p>Загрузка товаров в формате XML-выгрузки происходит через метод updateOffers.
-Метод принимает единственный параметр — строку с XML-выгрузкой.</p>
-
-<h2>
-<a id="Получение-заказов" class="anchor" href="#%D0%9F%D0%BE%D0%BB%D1%83%D1%87%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B7%D0%B0%D0%BA%D0%B0%D0%B7%D0%BE%D0%B2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Получение заказов</h2>
-
-<p>Партнёр получает заказы, используя метод getOrders. Метод отдаёт заказы начиная с указанной даты и времени.</p>
-
-<h2>
-<a id="Обновление-статуса-заказа-партнёром" class="anchor" href="#%D0%9E%D0%B1%D0%BD%D0%BE%D0%B2%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5-%D1%81%D1%82%D0%B0%D1%82%D1%83%D1%81%D0%B0-%D0%B7%D0%B0%D0%BA%D0%B0%D0%B7%D0%B0-%D0%BF%D0%B0%D1%80%D1%82%D0%BD%D1%91%D1%80%D0%BE%D0%BC" aria-hidden="true"><span class="octicon octicon-link"></span></a>Обновление статуса заказа партнёром</h2>
-
-<p>Для обновления заказа партнёр может делать запросы к API Enter Marketplace.
-Метод — updateOrderStatus.</p>
-
-<p>Описание параметров:</p>
-
-<table>
-<thead>
-<tr>
-<th>Элемент</th>
-<th>Описание</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>number</td>
-<td>Номер заказа в Enter</td>
-</tr>
-<tr>
-<td>date</td>
-<td>Дата установки статуса (ISO 8601, 2014-06-30T20:04:31)</td>
-</tr>
-<tr>
-<td>deliveryDate</td>
-<td>Дата (планируемой) доставки (ISO 8601, 2014-06-30)</td>
-</tr>
-<tr>
-<td>statusCode</td>
-<td>Код статуса в системе Enter</td>
-</tr>
-<tr>
-<td>statusDescription</td>
-<td>Текстовое описание статуса заказа в свободное форме от партнёра</td>
-</tr>
-</tbody>
-</table>
-
-<p>Варианты кодов:</p>
-
-<ul>
-<li>opened — Новый (статус по умолчанию)</li>
-<li>canceled — Отменён партнёром</li>
-<li>rejected — Не принят партнёром</li>
-<li>confirmed — Принят партнёром</li>
-<li>agreed — Согласован КЦ Enter с клиентом</li>
-<li>delivery — Передан в доставку</li>
-<li>received — Получен клиентом</li>
-<li>refused — Отказ клиента</li>
-</ul>
-
-<h2>
-<a id="Обновление-остатков" class="anchor" href="#%D0%9E%D0%B1%D0%BD%D0%BE%D0%B2%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5-%D0%BE%D1%81%D1%82%D0%B0%D1%82%D0%BA%D0%BE%D0%B2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Обновление остатков</h2>
-
-<p>Для оперативного обновления остатков партнёр может делать запросы к API Enter Marketplace.
-Метод — updateStock.</p>
-
-<p>Описание параметров:</p>
-
-<table>
-<thead>
-<tr>
-<th>Элемент</th>
-<th>Описание</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>offer</td>
-<td>ID товара из XML-выгрузки (выше)</td>
-</tr>
-<tr>
-<td>geoCode</td>
-<td>Код КЛАДР города</td>
-</tr>
-<tr>
-<td>quantity</td>
-<td>Доступное количество</td>
-</tr>
-</tbody>
-</table>
-        </section>
-
-        <aside id="sidebar">
-          <a href="https://github.com/SvyaznoyMarket/marketplace-api/zipball/master" class="button">
-            <small>Download</small>
-            .zip file
-          </a>
-          <a href="https://github.com/SvyaznoyMarket/marketplace-api/tarball/master" class="button">
-            <small>Download</small>
-            .tar.gz file
-          </a>
-
-          <p class="repo-owner"><a href="https://github.com/SvyaznoyMarket/marketplace-api"></a> is maintained by <a href="https://github.com/SvyaznoyMarket">SvyaznoyMarket</a>.</p>
-
-          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
-        </aside>
-      </div>
     </div>
+</header>
 
-  
-  </body>
+<div id="content-wrapper">
+    <div class="inner clearfix">
+        <section id="main-content">
+            <h1><a id="marketplace-integration" class="anchor" href="#marketplace-integration" aria-hidden="true"><span class="octicon octicon-link"></span></a>Интеграция с Enter Marketplace</h1>
+
+            <p>Основные интеграции:</p>
+
+            <ul>
+                <li>Товары (+ харакетиристики) — из XML-выгрузки (на текущий момент товары в заводятся редакцией Enter вручную, детали обсуждаются с менеджером)</li>
+                <li>Цены — через Marketplace API</li>
+                <li>Остатки — через Marketplace API</li>
+                <li>Варианты доставки — через Marketplace API</li>
+                <li>Передача созданных заказов обратно партнёру — API по выгрузке заказов за определённое время</li>
+                <li>Обновление статуса заказа партнёром — через Marketplace API</li>
+            </ul>
+
+            <p>Для обновления только остатков предусмотрен отдельный метод в Marketplace API, чтобы данные по наличию товара можно было обновлять в режиме реального времени.</p>
+            <p>Созданные на сайте и через КЦ Enter заказы будут передаваться партнёру в виде выгрузки за определённый период (метод <code>getOrders</code>).</p>
+
+            <h1><a id="partner-register" class="anchor" href="#partner-register" aria-hidden="true"><span class="octicon octicon-link"></span></a>Регистрация партнёра в Enter Marketplace</h1>
+
+            <p>Для начала работы партнёр должен быть зарегистрирован в Enter Marketplace.
+                Для регистрации партнёра нужна следующая информация:</p>
+            <ul>
+                <li>Название партнёра (будет отображаться на сайте)</li>
+                <li>Логотип (картинка, будет отображать на странице оформления заказа)</li>
+                <li>URL, по которому будет доступна XML-выгрузка товаров (опционально)</li>
+                <li> XML-выгрузка товаров</li>
+                <li>Описание формата (DTD): shops.dtd.</li>
+            </ul>
+            <p>Пример выгрузки:</p>
+
+<pre class="prettyprint">
+  &lt;?xml version="1.0" encoding="utf-8"?&gt;
+  &lt;!DOCTYPE yml_catalog SYSTEM "shops.dtd"&gt;
+  &lt;yml_catalog date="2016-03-09 18:31"&gt
+      &lt;shop&gt;
+      &lt;name&gt;Enter.ru&lt;/name&gt;
+      &lt;company&gt;Enter.ru&lt;/company&gt;
+      &lt;url&gt;http://www.enter.ru&lt;/url&gt;
+      &lt;email&gt;enter@enter.ru&lt;/email&gt;
+      &lt;currencies&gt;
+      &lt;currency id="RUR" rate="1"/&gt;
+      &lt;/currencies&gt;
+      &lt;offers&gt;
+          &lt;offer id="1142" type="vendor.model" available="false"&gt;
+              &lt;url&gt;http://www.enter.ru/reg/78637/product/household/odeyalo-140-h-205-sm-s-ekstraktom-aloe-vera-dargez-neapol-2040502000168&lt;/url&gt;
+              &lt;price&gt;1890.00&lt;/price&gt;
+              &lt;currencyId&gt;RUR&lt;/currencyId&gt;
+              &lt;categoryId&gt;3690&lt;/categoryId&gt;
+              &lt;picture&gt;http://fs01.enter.ru/1/1/500/09/2639.jpg&lt;/picture&gt;
+              &lt;store&gt;false&lt;/store&gt;
+              &lt;pickup&gt;false&lt;/pickup&gt;
+              &lt;delivery&gt;true&lt;/delivery&gt;
+              &lt;local_delivery_cost&gt;590&lt;/local_delivery_cost&gt;
+              &lt;typePrefix&gt;Одеяло 140 х 205 см с экстрактом алоэ вера&lt;/typePrefix&gt;
+              &lt;vendor&gt;Dargez&lt;/vendor&gt;
+              &lt;model&gt;"Неаполь"&lt;/model&gt;
+              &lt;description&gt;Одеяло «Неаполь» от компании Dargez – это сочетание, казалось бы, несочетаемых вещей: с одной стороны, оно обладает релаксирующим эффектом, помогает расслабиться вечером и быстро уснуть, а с другой – оно наполняет ваш организм энергией и силой, и ваше утро начнется не с ненависти к будильнику, а со сладких потягиваний. Это все возможно благодаря специальной пропитке материала – алоэ вера, которая благодаря своим целебным свойствам заботится о красоте и здоровье вашей кожи во время сна. К тому же о...&lt;/description&gt;
+              &lt;manufacturer_warranty&gt;true&lt;/manufacturer_warranty&gt;
+              &lt;barcode&gt;2040502000168&lt;/barcode&gt;
+              &lt;amount&gt;10&lt;/amount&gt;
+          &lt;/offer&gt;
+      &lt;/offers&gt;
+  &lt;/shop&gt;
+  &lt;/yml_catalog&gt;
+</pre>
+
+            <p>Детали обработки выгрузки в Enter Marketplace:</p>
+            <ul>
+                <li>Поддерживаемые типы товаров (offer): vendor.model</li>
+                <li>Поддерживаемые валюты: RUB</li>
+                <li>Поддержка нескольких картинок для одного товарного предложения (используется несколько элементов picture для одного товарного предложения)</li>
+            </ul>
+
+            <h1><a id="api-enter-marketplace" class="anchor" href="#api-enter-marketplace" aria-hidden="true"><span class="octicon octicon-link"></span></a>API Enter Marketplace</h1>
+
+            <p>API работает через протокол SOAP 1.1, <a href="http://marketplace.enter.ru/api/soap?wsdl">WSDL</a> с описанием методов. Обмен данными осуществляется через защищённое соединение (HTTPS). Используется Basic авторизация.</p>
+
+            <h2><a id="product-price-update" class="anchor" href="#product-price-update" aria-hidden="true"><span class="octicon octicon-link"></span></a>Обновление товаров</h2>
+
+            <p>Обновление товаров в формате XML-выгрузки происходит через метод <b>updateOffers</b>.
+                Метод принимает единственный параметр — строку с XML-выгрузкой (пример XML выше).
+                На данный момент поддерживается только обновление цены.</p>
+
+            <h2><a id="get-order" class="anchor" href="#get-order" aria-hidden="true"><span class="octicon octicon-link"></span></a>Получение заказов</h2>
+
+            <p>Партнёр получает заказы, используя метод <b>getOrders</b>. Метод отдаёт заказы начиная с указанной даты и времени.</p>
+            <p>Описание параметров:</p>
+
+            <table>
+                <thead>
+                <tr>
+                    <th>Элемент</th>
+                    <th>Описание</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>date</td>
+                    <td>Дата (ISO 8601, 2016-03-09T20:04:31)</td>
+                </tr>
+                </tbody>
+            </table>
+
+            <br>
+            <p>Пример запроса:</p>
+<pre class="prettyprint">
+  &lt;soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:soap="http://marketplace.enter.ru/marketplace/integration/soap"&gt;
+     &lt;soapenv:Header/&gt;
+     &lt;soapenv:Body&gt;
+        &lt;soap:getOrders soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"&gt;
+           &lt;from xsi:type="xsd:string"&gt;2016-02-09T18:31&lt;/from&gt;
+        &lt;/soap:getOrders&gt;
+     &lt;/soapenv:Body&gt;
+  &lt;/soapenv:Envelope&gt;
+</pre>
+
+            <h2><a id="update-order-status" class="anchor" href="#update-order-status" aria-hidden="true"><span class="octicon octicon-link"></span></a>Обновление статуса заказа партнёром</h2>
+
+            <p>Для обновления заказа партнёр может делать запросы к API Enter Marketplace. Метод — <b>updateOrderStatus.</b></p>
+            <p>Описание параметров:</p>
+
+            <table>
+                <thead>
+                <tr>
+                    <th>Элемент</th>
+                    <th>Описание</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>number</td>
+                    <td>Номер заказа в Enter</td>
+                </tr>
+                <tr>
+                    <td>deliveryDate</td>
+                    <td>Дата (планируемой) доставки (ISO 8601, 2014-06-30)</td>
+                </tr>
+                <tr>
+                    <td>statusCode</td>
+                    <td>Код статуса в системе Enter</td>
+                </tr>
+                </tbody>
+            </table>
+            <br>
+            <p>Пример запроса:</p>
+<pre class="prettyprint">
+  &lt;soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:soap="http://marketplace.enter.ru/marketplace/integration/soap"&gt;
+     &lt;soapenv:Header/&gt;
+     &lt;soapenv:Body&gt;
+        &lt;soap:updateOrderStatus soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"&gt;
+           &lt;number xsi:type="xsd:string"&gt;COTG-123456&lt;/number&gt;
+           &lt;deliveryDate xsi:type="xsd:string"&gt;2016-03-10&lt;/deliveryDate&gt;
+           &lt;statusCode xsi:type="xsd:string"&gt;received&lt;/statusCode&gt;
+        &lt;/soap:updateOrderStatus&gt;
+     &lt;/soapenv:Body&gt;
+  &lt;/soapenv:Envelope&gt;
+</pre>
+            <p>Варианты кодов:</p>
+
+            <ul>
+                <li>opened — Новый (статус по умолчанию)</li>
+                <li>canceled — Отменён партнёром</li>
+                <li>rejected — Не принят партнёром</li>
+                <li>confirmed — Принят партнёром</li>
+                <li>agreed — Согласован КЦ Enter с клиентом</li>
+                <li>delivery — Передан в доставку</li>
+                <li>received — Получен клиентом</li>
+                <li>refused — Отказ клиента</li>
+            </ul>
+
+            <h2>
+                <a id="update-stocks" class="anchor" href="#update-stocks" aria-hidden="true"><span class="octicon octicon-link"></span></a>Обновление остатков</h2>
+
+            <p>Для оперативного обновления остатков партнёр может делать запросы к API Enter Marketplace. Метод — <b>updateStock</b>.
+                На данный момент обновление остатков в разрезе города не поддерживается. Информация об остатке будет обновлена по всем имеющимся городам и будет идентична.</p>
+            <p>Описание параметров:</p>
+
+            <table>
+                <thead>
+                <tr>
+                    <th>Элемент</th>
+                    <th>Описание</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>offer</td>
+                    <td>ID товара из XML-выгрузки (см. выше)</td>
+                </tr>
+                <tr>
+                    <td>geoCode</td>
+                    <td>Код КЛАДР города</td>
+                </tr>
+                <tr>
+                    <td>quantity</td>
+                    <td>Доступное количество</td>
+                </tr>
+                </tbody>
+            </table>
+            <br>
+            <p>Пример запроса:</p>
+<pre class="prettyprint">
+  &lt;soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:soap="http://api.enter.ru/marketplace/integration/soap"&gt;
+     &lt;soapenv:Header/&gt;
+     &lt;soapenv:Body&gt;
+        &lt;soap:updateStock soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"&gt;
+           &lt;offer xsi:type="xsd:string"&gt;123456&lt;/offer&gt;
+           &lt;geoCode xsi:type="xsd:string"&gt;500340010000000000000&lt;/geoCode&gt;
+           &lt;stock xsi:type="xsd:int"&gt;15&lt;/stock&gt;
+        &lt;/soap:updateStock&gt;
+     &lt;/soapenv:Body&gt;
+  &lt;/soapenv:Envelope&gt;
+</pre>
+
+            <h2>
+                <a id="update-delivery" class="anchor" href="#update-stocks" aria-hidden="true"><span class="octicon octicon-link"></span></a>Обновление информации о доставке</h2>
+
+            <p>Для обновления информации о доставке партнёр может делать запросы к API Enter Marketplace. Метод — <b>updateDelivery</b>.</p>
+            <p>Описание параметров:</p>
+
+            <table>
+                <thead>
+                <tr>
+                    <th>Элемент</th>
+                    <th>Описание</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>geoCode</td>
+                    <td>Код КЛАДР города</td>
+                </tr>
+                <tr>
+                    <td>time</td>
+                    <td>Время доставки (в днях)</td>
+                </tr>
+                <tr>
+                    <td>price</td>
+                    <td>Стоимость доставки (руб.)</td>
+                </tr>
+                <tr>
+                    <td>freeFrom</td>
+                    <td>Сумма, начиная от которой доставка считается бесплатной</td>
+                </tr>
+                </tbody>
+            </table>
+            <br>
+            <p>Пример запроса:</p>
+<pre class="prettyprint">
+  &lt;soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:soap="http://api.enter.ru/marketplace/integration/soap"&gt;
+     &lt;soapenv:Header/&gt;
+     &lt;soapenv:Body&gt;
+        &lt;soap:updateDelivery soapenv:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"&gt;
+           &lt;geoCode xsi:type="xsd:string"&gt;500340010000000000000&lt;/geoCode&gt;
+           &lt;time xsi:type="xsd:int"&gt;3&lt;/time&gt;
+           &lt;price xsi:type="xsd:int"&gt;250&lt;/price&gt;
+           &lt;freeFrom xsi:type="xsd:int"&gt;3000&lt;/freeFrom&gt;
+        &lt;/soap:updateDelivery&gt;
+     &lt;/soapenv:Body&gt;
+  &lt;/soapenv:Envelope&gt;
+</pre>
+        </section>
+    </div>
+</div>
+</body>
 </html>
