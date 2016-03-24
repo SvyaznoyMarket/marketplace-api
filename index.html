@@ -108,8 +108,30 @@
             <h2><a id="product-price-update" class="anchor" href="#product-price-update" aria-hidden="true"><span class="octicon octicon-link"></span></a>Обновление товаров</h2>
 
             <p>Обновление товаров в формате XML-выгрузки происходит через метод <b>updateOffers</b>.
-                Метод принимает единственный параметр — строку с XML-выгрузкой (пример XML выше).
+                Метод принимает единственный параметр — строку с XML-выгрузкой.
                 На данный момент поддерживается только обновление цены.</p>
+
+            <br>
+            <p>Пример запроса:</p>
+<pre class="prettyprint">
+  &lt;env:Envelope xmlns:env="http://www.w3.org/2003/05/soap-envelope" xmlns:ns1="http://marketplace.enter.ru/marketplace/integration/soap" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:enc="http://www.w3.org/2003/05/soap-encoding"&gt;
+   &lt;env:Body&gt;
+    &lt;ns1:updateOffers&gt;
+    &lt;offers&gt;
+    &lt;![CDATA[&lt;yml_catalog&gt;
+      &lt;shop&gt;
+       &lt;offers&gt;
+        &lt;offer id="5_24" type="vendor.model" available="true"&gt;
+         &lt;price&gt;107969&lt;/price&gt;
+        &lt;/offer&gt;
+       &lt;/offers&gt;
+      &lt;/shop&gt;
+     &lt;/yml_catalog&gt;]]&gt;
+    &lt;/offers&gt;
+    &lt;/ns1:updateOffers&gt;
+   &lt;/env:Body&gt;
+  &lt;/env:Envelope&gt;
+</pre>
 
             <h2><a id="get-order" class="anchor" href="#get-order" aria-hidden="true"><span class="octicon octicon-link"></span></a>Получение заказов</h2>
 
